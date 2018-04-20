@@ -45,7 +45,7 @@ function addAnnotationToListing(annotation, source, listingLocation) {
         try {
           let graph = rdf.graph();
           rdf.parse(data, graph, baseListingUrl, 'text/turtle');
-          if (!graph.statementsMatching(source, vocab.as('items'), annotation)) {
+          if (graph.statementsMatching(source, vocab.as('items'), annotation).length == 0) {
             graph.add(source, vocab.as('items'), annotation);
             let newGraphContent = new rdf.Serializer(graph).toN3(graph);
             resolve(newGraphContent);
@@ -64,7 +64,6 @@ function addAnnotationToListing(annotation, source, listingLocation) {
     return new Promise(function(resolve, reject) {
       if (content) {
         // write to listingLocation
-        console.log(content);
         fs.writeFile(listingLocation, content, function(err) {
           if(err) {
             reject(err);
