@@ -127,15 +127,5 @@ watcher.on('create', function(file, stats) {
     } else {
         console.log(err);
     }
+  });
 });
-
-
-
-
-});
-watcher.on('change', function(file, stats) {
-  console.log(file + ' was changed');
-});
-watcher.on('delete', function(file) {
-  console.log(file + ' was deleted');
-})
