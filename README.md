@@ -6,7 +6,7 @@ Watches an inbox directory where Linked Data Notifications will arrive.
 
 ## Install and run
 - Install: `npm install`
-- Run: `node src/inboxwatcher.js <file>`
+- Run: `node src/inboxwatcher.js <directory_to_watch> <listing_location> <base_listing_url>`
 
 ## Tool developed for UGent Master's thesis
 Some of the code is reusable, however the code was customized to suit the thesis.
