@@ -5,10 +5,14 @@ const ns = require('rdf-ns')(rdf);
 const fs = require('fs');
 const path = require('path');
 /*************************************/
+// PARAMETERS
 
 var inboxLocation = process.argv[2];
 if (!inboxLocation) {
   console.log("No directory parameter found")
+  console.log("Usage: node inboxwatcher.js <directory_to_watch> <listing_location> <base_listing_url>");
+  process.exit(-1);
+} else if (inboxLocation == "--help") {
   console.log("Usage: node inboxwatcher.js <directory_to_watch> <listing_location> <base_listing_url>");
   process.exit(-1);
 }
@@ -94,6 +98,7 @@ function addAnnotationToListing(annotation, source, listingLocation) {
 
 function moveToProcessedDirectory(file) {
   // TODO: Implement this
+  // Not that important for demo
 }
 
 watcher = hound.watch(inboxLocation);
@@ -130,9 +135,6 @@ watcher.on('create', function(file, stats) {
             });
           }
         });
-
-
-
       } catch(err) {
         console.log(err);
       }
