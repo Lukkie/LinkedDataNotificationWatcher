@@ -39,26 +39,39 @@ function addAnnotationToListing(annotation, source, listingLocation) {
   console.log("Adding annotation to listing");
   return new Promise(function(resolve, reject) {
     // assumes listing already exists!
-    fs.readFile(listingLocation, {encoding: 'utf-8'}, function(err, data){
-      if (!err) {
-        // parse file with RDFlib
-        try {
-          let graph = rdf.graph();
-          rdf.parse(data, graph, baseListingUrl, 'text/turtle');
-          if (graph.statementsMatching(source, vocab.as('items'), annotation).length == 0) {
-            graph.add(source, vocab.as('items'), annotation);
-            let newGraphContent = new rdf.Serializer(graph).toN3(graph);
-            resolve(newGraphContent);
-          } else {
-            reject("Annotation is already present in listing.");
+    if (fs.existsSync(path)) {
+      fs.readFile(listingLocation, {encoding: 'utf-8'}, function(err, data) {
+        if (!err) {
+          // parse file with RDFlib
+          try {
+            let graph = rdf.graph();
+            rdf.parse(data, graph, baseListingUrl, 'text/turtle');
+            if (graph.statementsMatching(source, vocab.as('items'), annotation).length == 0) {
+              graph.add(source, vocab.as('items'), annotation);
+              let newGraphContent = new rdf.Serializer(graph).toN3(graph);
+              resolve(newGraphContent);
+            } else {
+              reject("Annotation is already present in listing.");
+            }
+          } catch (error) {
+            reject(err);
           }
-        } catch (error) {
+        } else {
           reject(err);
         }
-      } else {
+      });
+    }
+    else {
+      // Generate new listing file
+      try {
+        let graph = rdf.graph();
+        graph.add(source, vocab.as('items'), annotation);
+        let newGraphContent = new rdf.Serializer(graph).toN3(graph);
+        resolve(newGraphContent);
+      } catch (error) {
         reject(err);
       }
-    });
+    }
   })
   .then(function(content) {
     return new Promise(function(resolve, reject) {
