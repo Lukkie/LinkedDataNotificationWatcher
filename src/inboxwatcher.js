@@ -43,7 +43,7 @@ function addAnnotationToListing(annotation, source, listingLocation) {
   console.log("Adding annotation to listing");
   return new Promise(function(resolve, reject) {
     // assumes listing already exists!
-    if (fs.existsSync(path)) {
+    if (fs.existsSync(listingLocation)) {
       fs.readFile(listingLocation, {encoding: 'utf-8'}, function(err, data) {
         if (!err) {
           // parse file with RDFlib
@@ -106,11 +106,13 @@ watcher = hound.watch(inboxLocation);
 watcher.on('create', function(file, stats) {
   console.log(file + ' was added to the inbox');
 
+  setTimeout(function() {
   // open file
   fs.readFile(file, {encoding: 'utf-8'}, function(err, data){
     if (!err) {
       // parse file with RDFlib
       let notificationGraph = rdf.graph();
+      debugger;
       try {
         rdf.parse(data, notificationGraph, 'https://example.org/somegraph', 'text/turtle');
         let notificationObject = notificationGraph.statementsMatching(undefined, vocab.as('Announce'), undefined)[0].object.value;
@@ -142,4 +144,5 @@ watcher.on('create', function(file, stats) {
         console.log(err);
     }
   });
+  }, 500);
 });
